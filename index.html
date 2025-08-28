@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>उसने कहा था - वस्तुनिष्ठ प्रश्नोत्तरी</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .ad-container {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        h1, h2 {
+            color: #1a73e8;
+            text-align: center;
+            border-bottom: 2px solid #1a73e8;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        #question-area {
+            min-height: 150px;
+            margin-bottom: 20px;
+        }
+
+        #question-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .options label:hover {
+            background-color: #e8f0fe;
+        }
+        
+        .options input[type="radio"]:checked + span {
+            font-weight: bold;
+            color: #1a73e8;
+        }
+        
+        .options label.selected {
+             background-color: #e8f0fe;
+             border-color: #1a73e8;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 12px;
+        }
+        
+        #navigation-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #1a73e8;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .nav-btn:hover {
+            background-color: #155ab3;
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn#prev-btn {
+            background-color: #6c757d;
+        }
+        .nav-btn#prev-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #welcome-container, #results-container {
+            text-align: center;
+        }
+
+        #quiz-container, #results-container {
+            display: none;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        #progress-indicator {
+            font-weight: bold;
+            color: #555;
+        }
+
+        #score-breakdown {
+            text-align: center;
+            margin: 25px 0;
+            font-size: 1.3em;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .correct-summary {
+            color: #4caf50;
+            font-weight: 600;
+        }
+        .incorrect-summary {
+            color: #f44336;
+            font-weight: 600;
+        }
+        .unanswered-summary {
+            color: #6c757d;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- ====== Top Ad Slot ====== -->
+    <div class="ad-container">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '4b505c9273cf9161c278efee028f35e2',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/4b505c9273cf9161c278efee028f35e2/invoke.js"></script>
+    </div>
+
+    <!-- ====== Main Quiz Container ====== -->
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome-container">
+            <h1>उसने कहा था - वस्तुनिष्ठ प्रश्नोत्तरी</h1>
+            <p>टेस्ट शुरू करने से पहले कृपया अपना नाम दर्ज करें।</p>
+            <input type="text" id="userName" placeholder="अपना नाम यहाँ लिखें">
+            <button class="nav-btn" id="start-btn" style="width: 100%;">क्विज़ शुरू करें</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-container">
+            <h2>कक्षा 12 | हिंदी पाठ - 2 "उसने कहा था"</h2>
+            <div id="question-area">
+                <!-- Current Question will be loaded here -->
+            </div>
+
+            <div id="navigation-area">
+                <button class="nav-btn" id="prev-btn">पिछला</button>
+                <span id="progress-indicator"></span>
+                <button class="nav-btn" id="next-btn">अगला</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-container">
+            <h2 id="result-heading">आपका परिणाम</h2>
+            <p id="score-text" style="font-size: 1.5em; font-weight: bold; text-align: center;"></p>
+            <div id="score-breakdown"></div>
+            <button class="nav-btn" id="retry-btn" style="margin-top:20px; width: 100%;">फिर से प्रयास करें</button>
+        </div>
+    </div>
+    
+    <!-- ====== Bottom Ad Slot ====== -->
+    <div class="ad-container">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '4b505c9273cf9161c278efee028f35e2',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/4b505c9273cf9161c278efee028f35e2/invoke.js"></script>
+    </div>
+
+    <script>
+        const quizData = [
+            { question: "'उसने कहा था' कहानी के नायक कौन हैं?", options: ["बोधा सिंह", "लहना सिंह", "वजीरा सिंह", "हजारा सिंह"], answer: "B" },
+            { question: "चंद्रधर शर्मा 'गुलेरी' जी का जन्म कब हुआ था?", options: ["7 जुलाई, 1883", "8 जुलाई, 1884", "9 जुलाई, 1885", "10 जुलाई, 1886"], answer: "A" },
+            { question: "'उसने कहा था' कहानी किस वर्ष प्रकाशित हुई?", options: ["1912 में", "1913 में", "1915 में", "1920 में"], answer: "C" },
+            { question: "लहना सिंह किस पद पर था?", options: ["सूबेदार", "लेफ्टिनेंट", "जमादार", "मेजर"], answer: "C" },
+            { question: "'तेरी कुड़माई हो गई?' यह किस कहानी से संबंधित है?", options: ["रोज", "उसने कहा था", "तिरिछ", "जूठन"], answer: "B" },
+            { question: "'उसने कहा था' कहानी में किस शहर का चित्रण है?", options: ["जयपुर", "लखनऊ", "अमृतसर", "चंडीगढ़"], answer: "C" },
+            { question: "लहना सिंह की मृत्यु किसकी गोद में हुई?", options: ["कीरत सिंह", "वजीरा सिंह", "अतर सिंह", "महीप सिंह"], answer: "B" },
+            { question: "पलटन का विदूषक कौन था?", options: ["हजारा सिंह", "मुख्तार सिंह", "वजीरा सिंह", "कुलदीप सिंह"], answer: "C" },
+            { question: "गुलेरी जी ने कुल कितनी कहानियाँ लिखीं?", options: ["एक", "दो", "तीन", "चार"], answer: "C" },
+            { question: "सिख राइफल्स के जमादार लहना सिंह का नंबर क्या था?", options: ["77", "105", "1805", "72"], answer: "A" },
+            { question: "सूबेदार हजारा सिंह के लड़के का क्या नाम था?", options: ["बोधा सिंह", "महा सिंह", "कीरत सिंह", "जगधारी सिंह"], answer: "A" },
+            { question: "भारतीय सिपाहियों का किसके साथ संघर्ष हुआ था?", options: ["फ्रांसीसियों के साथ", "तुर्कों के साथ", "अंग्रेजों के साथ", "जर्मनी के साथ"], answer: "D" },
+            { question: "जर्मन 'लपटन' को किसने मार गिराया?", options: ["सूबेदार ने", "बोधा सिंह ने", "लहना सिंह ने", "वजीरा सिंह ने"], answer: "C" },
+            { question: "सरकार ने सूबेदार को जमीन कहाँ दी है?", options: ["संजरपुर में", "अलावलपुर में", "जलालपुर में", "लायलपुर में"], answer: "D" },
+            { question: "चंद्रधर शर्मा गुलेरी किस युग के कहानीकार हैं?", options: ["द्विवेदी युग", "भारतेंदु युग", "प्रेमचंद युग", "इनमें से कोई नहीं"], answer: "C" },
+            { question: "'कछुआ धरम' किसकी कृति है?", options: ["प्रताप नारायण मिश्र", "बालकृष्ण भट्ट", "रामचंद्र शुक्ल", "चंद्रधर शर्मा गुलेरी"], answer: "D" },
+            { question: "'पुरानी हिन्दी' रचना किसकी है?", options: ["हजारी प्रसाद द्विवेदी की", "नामवर सिंह की", "चंद्रधर शर्मा गुलेरी की", "रामचंद्र शुक्ल की"], answer: "C" },
+            { question: "कुड़माई का क्या अर्थ होता है?", options: ["विवाह", "मंगनी", "तिलक", "गौना"], answer: "B" },
+            { question: "बोधा कौन था?", options: ["हजारा सिंह का भाई", "लहना सिंह का भाई", "सूबेदार हजारा सिंह का बेटा", "वजीरा सिंह का भाई"], answer: "C" },
+            { question: "गुलेरी जी किस गाँव के मूल निवासी थे?", options: ["फतहपुर", "गुलेर", "मनेर", "गहमर"], answer: "B" },
+            { question: "'उसने कहा था' कहानी कितने भागों में विभक्त है?", options: ["दो भागों में", "तीन भागों में", "चार भागों में", "पाँच भागों में"], answer: "D" },
+            { question: "लहना सिंह के गाँव का क्या नाम है?", options: ["मगरे", "माँझे", "कटरा", "तेलघरिया"], answer: "B" },
+            { question: "अमृतसर में लहना सिंह के कौन थे?", options: ["भाई", "मित्र", "मामा", "चाचा"], answer: "C" },
+            { question: "बचपन में लहना सिंह लड़की से बार-बार कौन-सा प्रश्न करता था?", options: ["तेरा नाम क्या है?", "तू कहाँ रहती है?", "तेरी कुड़माई हो गई?", "तेरी शादी हो गई?"], answer: "C" },
+            { question: "लपटन साहब सूबेदार को कितने आदमी खंदक में छोड़कर जाने को कहता है?", options: ["पंद्रह", "दस", "पाँच", "बीस"], answer: "B" },
+            { question: "सूबेदारनी ने अपने पति एवं पुत्र की रक्षा के लिए किससे कहा?", options: ["वजीरा सिंह से", "लहना सिंह से", "कीरत सिंह से", "इनमें किसी से नहीं"], answer: "B" },
+            { question: "कीरत सिंह कौन था?", options: ["लहना सिंह का चाचा", "लहना सिंह का भतीजा", "लहना सिंह का भाई", "लहना सिंह का मित्र"], answer: "B" },
+            { question: "गुलेरी जी का निधन कब हुआ था?", options: ["11 सितंबर, 1921", "12 सितंबर, 1922", "13 सितंबर, 1923", "14 सितंबर, 1924"], answer: "B" },
+            { question: "गुलेरी जी ने किस पत्रिका का संपादन किया?", options: ["समालोचक", "काशी नागरी प्रचारिणी पत्रिका", "(A) और (B) दोनों", "इनमें से कोई नहीं"], answer: "C" },
+            { question: "'सुखमय जीवन' किसकी रचना है?", options: ["चंद्रधर शर्मा गुलेरी", "देवकीनंदन खत्री", "गोपाल राम गहमरी", "बालकृष्ण भट्ट"], answer: "A" },
+            { question: "'बुद्धू का काँटा' के लेखक कौन हैं?", options: ["बालकृष्ण भट्ट", "चंद्रधर शर्मा गुलेरी", "जयप्रकाश नारायण", "नामवर सिंह"], answer: "B" },
+            { question: "'उसने कहा था' किस प्रकार की कहानी है?", options: ["चरित्र-प्रधान", "कर्म-प्रधान", "धर्म-प्रधान", "भाव-प्रधान"], answer: "B" },
+            { question: "कहानी के कितने भागों में युद्ध का वर्णन है?", options: ["दो", "तीन", "चार", "एक"], answer: "B" },
+            { question: "लहना सिंह सूबेदार को वापस बुलाने के लिए किसे भेजता है?", options: ["वजीरा सिंह", "बोधा सिंह", "कीरत सिंह", "अतर सिंह"], answer: "A" },
+            { question: "लहना सिंह का सिर अपनी गोद में लेकर कौन बैठा था?", options: ["हजारा सिंह", "कीरत सिंह", "वजीरा सिंह", "अतर सिंह"], answer: "C" },
+            { question: "प्रथम विश्व युद्ध में इंग्लैंड किसके विरुद्ध लड़ रहा था?", options: ["भारत", "जर्मनी", "ऑस्ट्रिया", "अमेरिका"], answer: "B" },
+            { question: "गुलेरी जी का जन्म कहाँ हुआ था?", options: ["हरियाणा", "कांगड़ा, हिमाचल प्रदेश", "जयपुर, राजस्थान", "गुजरात"], answer: "C" },
+            { question: "'जाड़ा क्या है, मौत है और निमोनिया से मरनेवालों को मुरब्बे नहीं मिला करते।' यह किस पाठ की उक्ति है?", options: ["उसने कहा था", "रोज", "सिपाही की माँ", "तिरिछ"], answer: "A" },
+            { question: "लड़की कहाँ रहती थी?", options: ["गुरु बाजार में", "अतर सिंह की बैठक में", "मामा के यहाँ", "नानी के यहाँ"], answer: "B" },
+            { question: "पहली बार लड़का-लड़की कहाँ मिले थे?", options: ["घर पर", "बाग में", "दुकान पर", "गली में"], answer: "C" },
+            { question: "नकली लड़ाई के पीछे लहना सिंह कहाँ शिकार पर गया था?", options: ["जगधारी जंगल में", "रणधारी जंगल में", "देवधारी जंगल में", "इनमें से कोई नहीं"], answer: "A" },
+            { question: "फिरंगी मेम ने सिपाहियों को क्या दिया था?", options: ["फल", "दूध", "चाय", "(A) और (B) दोनों"], answer: "D" },
+            { question: "कौन-सी रचना गुलेरी जी की नहीं है?", options: ["सुखमय जीवन", "बुद्धू का काँटा", "उसने कहा था", "हारे को हरिनाम"], answer: "D" },
+            { question: "वजीरा सिंह किस लड़ाई में था?", options: ["फ्रांस और बेल्जियम की", "जर्मनी की", "खंदक की लड़ाई", "इनमें से कोई नहीं"], answer: "C" },
+            { question: "लहना सिंह के मामा कहाँ के रहने वाले थे?", options: ["चंडीगढ़", "अमृतसर", "लुधियाना", "जयपुर"], answer: "B" },
+            { question: "सूबेदारनी कितने वर्ष बाद लहना सिंह से मिली?", options: ["20 वर्ष", "25 वर्ष", "15 वर्ष", "30 वर्ष"], answer: "B" },
+            { question: "बचपन में लहना सिंह का स्वभाव कैसा था?", options: ["शांत", "गंभीर", "चंचल और शरारती", "डरपोक"], answer: "C" },
+            { question: "'बिना फेरे घोड़ा बिगड़ता है और बिना लड़े सिपाही।' यह पंक्ति किस कहानी में है?", options: ["रोज", "ओ सदानीरा", "एक लेख और एक पत्र", "उसने कहा था"], answer: "D" },
+            { question: "'उसने कहा था' कहानी का केन्द्रीय भाव क्या है?", options: ["युद्ध का विरोध", "दिव्य प्रेम और त्याग", "सामाजिक कुरीतियाँ", "देश भक्ति"], answer: "B" },
+            { question: "चंद्रधर शर्मा गुलेरी की वृत्ति क्या थी?", options: ["व्यापार", "खेती-बारी", "अध्यापन", "इनमें से कोई नहीं"], answer: "C" }
+        ];
+
+        // --- DOM Element References ---
+        const welcomeContainer = document.getElementById('welcome-container');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsContainer = document.getElementById('results-container');
+        
+        const startBtn = document.getElementById('start-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const retryBtn = document.getElementById('retry-btn');
+
+        const questionArea = document.getElementById('question-area');
+        const scoreText = document.getElementById('score-text');
+        const scoreBreakdown = document.getElementById('score-breakdown');
+        const userNameInput = document.getElementById('userName');
+        const resultHeading = document.getElementById('result-heading');
+        const progressIndicator = document.getElementById('progress-indicator');
+        
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let currentUserName = '';
+
+        // --- Functions ---
+        function showQuestion(index) {
+            const questionData = quizData[index];
+            let questionHTML = `<div id="question-text">${index + 1}. ${questionData.question}</div>
+                                <div class="options">`;
+            
+            questionData.options.forEach((option, i) => {
+                const optionLetter = String.fromCharCode(65 + i);
+                const isChecked = userAnswers[index] === optionLetter ? 'checked' : '';
+                questionHTML += `<label>
+                    <input type="radio" name="q${index}" value="${optionLetter}" ${isChecked}>
+                    <span>(${optionLetter}) ${option}</span>
+                </label>`;
+            });
+            
+            questionHTML += `</div>`;
+            questionArea.innerHTML = questionHTML;
+
+            progressIndicator.innerText = `प्रश्न ${index + 1} / ${quizData.length}`;
+            prevBtn.classList.toggle('hidden', index === 0);
+            nextBtn.innerText = (index === quizData.length - 1) ? 'क्विज़ सबमिट करें' : 'अगला';
+            
+            document.querySelectorAll(`input[name="q${index}"]`).forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    document.querySelectorAll(`#question-area .options label`).forEach(label => label.classList.remove('selected'));
+                    e.target.parentElement.classList.add('selected');
+                });
+            });
+
+            if (userAnswers[index]) {
+                const selectedRadio = document.querySelector(`input[name="q${index}"][value="${userAnswers[index]}"]`);
+                if (selectedRadio) selectedRadio.parentElement.classList.add('selected');
+            }
+        }
+        
+        function saveAnswer() {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (selectedOption) userAnswers[currentQuestionIndex] = selectedOption.value;
+        }
+
+        function startQuiz() {
+            currentUserName = userNameInput.value.trim();
+            if (currentUserName === "") {
+                alert("कृपया अपना नाम दर्ज करें!");
+                return;
+            }
+            
+            currentQuestionIndex = 0;
+            userAnswers = new Array(quizData.length).fill(null);
+            
+            welcomeContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            
+            showQuestion(currentQuestionIndex);
+        }
+
+        function showResults() {
+            let score = 0;
+            let unansweredCount = 0;
+
+            quizData.forEach((item, index) => {
+                if (userAnswers[index] === null) {
+                    unansweredCount++;
+                } else if (userAnswers[index] === item.answer) {
+                    score++;
+                }
+            });
+
+            const incorrectCount = quizData.length - score - unansweredCount;
+
+            resultHeading.innerText = `बहुत बढ़िया, ${currentUserName}!`;
+            scoreText.innerText = `आपका कुल स्कोर: ${quizData.length} में से ${score}`;
+            
+            scoreBreakdown.innerHTML = `
+                <span class="correct-summary">✓ सही: <strong>${score}</strong></span>
+                <span class="incorrect-summary">✗ गलत: <strong>${incorrectCount}</strong></span>
+                <span class="unanswered-summary">? छोड़े गए: <strong>${unansweredCount}</strong></span>
+            `;
+
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+        }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+
+        nextBtn.addEventListener('click', () => {
+            saveAnswer();
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            } else {
+                showResults();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            saveAnswer();
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+            }
+        });
+
+        retryBtn.addEventListener('click', () => {
+            resultsContainer.style.display = 'none';
+            welcomeContainer.style.display = 'block';
+            userNameInput.value = '';
+        });
+
+    </script>
+</body>
+</html>
